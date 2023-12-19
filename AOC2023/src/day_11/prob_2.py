@@ -8,19 +8,27 @@ ip_to_mat: typing.List[typing.List[str]] = convert_to_2d_array(ip_list)
 row_count = len(ip_to_mat)
 col_count = len(ip_to_mat[0])
 
+# this is to avoid inserting 1 million row or column
+coordinate_distance_matrix: typing.List[typing.List[typing.List[int]]] = []
+
+for i in range(row_count):
+    temp_row: typing.List[typing.List[int]] = []
+    for j in range(col_count):
+        temp_row.append([i, j])
+    coordinate_distance_matrix.append(temp_row)
+
 # expand rows
 i, count = 0, 0
-while i < row_count:
+for i in range(row_count):
     is_same: bool = True
-    for curr_char in ip_to_mat[i]:
-        if curr_char == '#':
+    j = 0
+    for j in range(col_count):
+        if ip_to_mat[i][j] == '#':
             is_same = False
+            coordinate_distance_matrix[i][j][0] += ((count))
+
     if is_same:
-        add_row = ip_to_mat[i].copy()
-        ip_to_mat.insert(i, add_row)
-        row_count += 1
-        i += 1
-    i += 1
+        count += 999999
 
 # expand columns
 j, count = 0, 0
@@ -30,15 +38,18 @@ while j < col_count:
     while i < row_count:
         if ip_to_mat[i][j] == '#':
             is_same = False
+            coordinate_distance_matrix[i][j][1] += ((count))
         i += 1
     i = 0
     if is_same:
-        while i < row_count:
-            ip_to_mat[i].insert(j, '.')
-            i += 1
-        j += 1
-        col_count += 1
+        count += 999999
     j += 1
+
+for i in coordinate_distance_matrix:
+    print(i)
+
+for i in ip_to_mat:
+    print(i)
 
 # list all galaxy
 
@@ -47,7 +58,7 @@ galaxy_list: typing.List[typing.List[int]] = []
 for i in range(row_count):
     for j in range(col_count):
         if ip_to_mat[i][j] == "#":
-            galaxy_list.append([i, j])
+            galaxy_list.append([coordinate_distance_matrix[i][j][0], coordinate_distance_matrix[i][j][1]])
 
 print(galaxy_list)
 galaxy_count = len(galaxy_list)
