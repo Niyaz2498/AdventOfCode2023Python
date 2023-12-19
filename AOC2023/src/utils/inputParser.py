@@ -1,7 +1,7 @@
 import typing
 
 
-def convert_to_2d_array(ip_str_arr: typing.List[str]):
+def convert_to_2d_array(ip_str_arr: typing.List[str]) -> typing.List[typing.List[str]]:
     return [[char for char in ip_str] for ip_str in ip_str_arr]
 
 
